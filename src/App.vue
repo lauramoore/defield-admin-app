@@ -1,16 +1,37 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App with Firebase login "/>
+    <AuthWidget v-if="!isAuthenticated" />
+    <HelloWorld v-else />
 </template>
 
 <script>
 import HelloWorld from './components/HelloWorld.vue'
+import AuthWidget from './components/Auth.vue';
+import { ref, onMounted } from 'vue';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
-  }
+    HelloWorld,
+    AuthWidget
+  },
+  setup() {
+  const isAuthenticated = ref(false);
+
+    onMounted(() => {
+      const auth = getAuth();
+      onAuthStateChanged(auth, (user) => {
+        // Update the value based on the user's login status
+        isAuthenticated.value = !!user;
+        console.log('Auth state changed. User is authenticated:', isAuthenticated.value);
+      });
+    });
+
+    return {
+      isAuthenticated
+    };
+  }  
 }
 </script>
 

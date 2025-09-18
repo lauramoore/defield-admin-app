@@ -1,6 +1,9 @@
 # defield-starter-app
 
-A vue app that includes firebase authentication UI, also install the defield-firebase-functions project and start emulators to have authentication work
+Vue.js
+Firebase
+
+You will need to have de-firebase-functions in emulator mode for local testing
 
 ## Project setup
 ```

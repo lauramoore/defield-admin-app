@@ -5,7 +5,7 @@
 <script setup>
 import { onMounted, defineComponent, getCurrentInstance } from 'vue';
 import * as firebaseui from 'firebaseui';
-import {GoogleAuthProvider, EmailAuthProvider} from 'firebase/auth';
+import {GoogleAuthProvider} from 'firebase/auth';
 import 'firebaseui/dist/firebaseui.css';
 
 onMounted(() => {
@@ -22,12 +22,6 @@ onMounted(() => {
         customParameters: {
           // Example: prompt: 'select_account'
         }
-      },
-      {
-        provider: EmailAuthProvider.PROVIDER_ID,
-        providerName: 'Email',
-        // For emulator, you may want to enable email link sign-in for testing
-        signInMethod: 'password'
       }
     ],
     credentialHelper: firebaseui.auth.CredentialHelper.NONE, // Avoids popup issues with emulators
