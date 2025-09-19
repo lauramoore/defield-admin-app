@@ -3,42 +3,67 @@
     <aside class="sidebar">
       <h2 class="sidebar-title">Menu</h2>
       <ul>
-        <li><a href="#">Dashboard</a></li>
-        <li><a href="#">Sessions</a></li>
-        <li><a href="#">Feedback</a></li>
+        <li>
+          <a
+            href="#"
+            @click.prevent="activeSection = 'sessions'"
+            :class="{ 'active-menu': activeSection === 'sessions' }"
+          >Sessions</a>
+        </li>
+        <li>
+          <a
+            href="#"
+            @click.prevent="activeSection = 'feedback'"
+            :class="{ 'active-menu': activeSection === 'feedback' }"
+          >Feedback</a>
+        </li>
+        <li>
+          <a
+            href="#"
+            @click.prevent="activeSection = 'communications'"
+            :class="{ 'active-menu': activeSection === 'communications' }"
+          >Communications</a>
+        </li>
       </ul>
     </aside>
     <main class="main-content">
       <h1 class="title">Walton DE Field</h1>
-      <div class="card-grid">
-        <div class="card session-card">
-          <h3>Session Management</h3>
-          <p>Manage sessions and registrations here.</p>
-        </div>
-        <div class="card feedback-card">
-          <h3>Review Feedback</h3>
-          <p>Check out the latest feedback from users.</p>
-        </div>
-        <div class="card welcome-card">
-          <h3>Communications</h3>
-          <p>Post information that users need to know.</p>
-        </div>
-      </div>
+      <keep-alive>
+      <component :is="currentComponent" />
+      </keep-alive>
     </main>
   </div>
 </template>
-
 <script>
 console.log('HelloWorld component loaded');
+import SessionsMain from './SessionsMain.vue'
+import FeedbackMain from './FeedbackMain.vue'
+import CommunicationsMain from './CommunicationsMain.vue'
+
 export default {
   name: 'HelloWorld',
-  props: {
+  components: {
+    SessionsMain,
+    FeedbackMain,
+    CommunicationsMain
   },
-  setup() {
+  props: {},
+  data() {
+    return {
+      activeSection: 'sessions'
+    }
+  },
+  computed: {
+    currentComponent() {
+      if (this.activeSection === 'sessions') return 'SessionsMain'
+      if (this.activeSection === 'feedback') return 'FeedbackMain'
+      if (this.activeSection === 'communications') return 'CommunicationsMain'
+      return 'SessionsMain'
+    }
   }
 }
-
 </script>
+
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto:wght@400;500&display=swap');
 
@@ -93,7 +118,11 @@ export default {
   display: flex;
   align-items: center;
 }
-
+.active-menu {
+  background: linear-gradient(90deg, #1976d2 0%, #e53935 100%);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(25,118,210,0.2);
+}
 .sidebar a:hover {
   background: linear-gradient(90deg, #1976d2 0%, #e53935 100%);
   color: #fff;
