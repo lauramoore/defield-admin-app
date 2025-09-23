@@ -29,44 +29,32 @@
     <main class="main-content">
       <h1 class="title">Walton DE Field</h1>
       <keep-alive>
-      <component :is="currentComponent" />
+        <component :is="currentComponent" />
       </keep-alive>
     </main>
   </div>
 </template>
-<script>
-console.log('HelloWorld component loaded');
+
+<script setup>
+import { ref, computed } from 'vue'
 import SessionsMain from './SessionsMain.vue'
 import FeedbackMain from './FeedbackMain.vue'
 import CommunicationsMain from './CommunicationsMain.vue'
 
-export default {
-  name: 'HelloWorld',
-  components: {
-    SessionsMain,
-    FeedbackMain,
-    CommunicationsMain
-  },
-  props: {},
-  data() {
-    return {
-      activeSection: 'sessions'
-    }
-  },
-  computed: {
-    currentComponent() {
-      if (this.activeSection === 'sessions') return 'SessionsMain'
-      if (this.activeSection === 'feedback') return 'FeedbackMain'
-      if (this.activeSection === 'communications') return 'CommunicationsMain'
-      return 'SessionsMain'
-    }
-  }
-}
+const activeSection = ref('sessions')
+
+const currentComponent = computed(() => {
+  if (activeSection.value === 'sessions') return SessionsMain
+  if (activeSection.value === 'feedback') return FeedbackMain
+  if (activeSection.value === 'communications') return CommunicationsMain
+  return SessionsMain
+})
 </script>
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto:wght@400;500&display=swap');
 
+/* ...styles unchanged... */
 .hello {
   display: flex;
   min-height: 100vh;

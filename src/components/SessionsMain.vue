@@ -1,24 +1,15 @@
 <template>
     <div class="sessions-main">
-        <h1>Sessions Main</h1>
+        <SessionsTable />
         <!-- Add your session-related content here -->
     </div>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue'
+import SessionsTable from './SessionsTable.vue'
 
-// Example state
-export default {
-  name: 'SessionsMain',
-  props: {},
-  setup() {
-    const sessions = ref([])
-    return {
-      sessions
-    }
-  }
-}
+const sessions = ref([])
 </script>
 
 <style scoped>

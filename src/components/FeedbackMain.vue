@@ -5,20 +5,10 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue'
 
-// Example state
-export default {
-  name: 'FeedbackMain',
-  props: {},
-  setup() {
-    const feedback = ref([])
-    return {
-      feedback
-    }
-  }
-}
+const feedback = ref([])
 </script>
 
 <style scoped>
