@@ -7,10 +7,11 @@
         <div class="card-body">
             <p><strong>Parent:</strong> {{ session.parent }}</p>
             <p><strong>Teams:</strong> {{ formatTeams(session.teams) }}</p>
-            <p v-if="session.repeatWeekly" class="repeat-info">Repeats Weekly</p>
         </div>
         <div class="card-footer">
-            <button @click="$emit('edit', session)" class="btn-secondary">Edit</button>
+            <RouterLink :to="`/sessions/edit/${session.id}`" class="btn-secondary">
+            <button>Edit</button>
+            </RouterLink>
         </div>
     </div>
 </template>

@@ -10,13 +10,8 @@
                 @edit="openEditModal"
             />
         </div>
-        <button @click="openAddModal" class="fab">+</button>
-        <AddSessionModal 
-            v-if="showModal" 
-            :session="sessionToEdit"
-            @close="closeModal" 
-            @session-saved="handleSessionSaved"
-        />
+       <router-link to="/sessions/add"><button class="fab">+</button></router-link>
+        
     </div>
 </template>
 

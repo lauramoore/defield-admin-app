@@ -1,10 +1,15 @@
 import SessionsMain from '@/components/SessionsMain.vue'
+import AddSessionsModal from '@/components/AddSessionModal.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    {
+   
+   
+   { path: '/sessions/add', name: 'add-session', component: AddSessionsModal },
+   { path: '/sessions/edit/:id', name: 'edit-session', component: AddSessionsModal, props: true },
+  {
       path: '/sessions',
       name: 'sessions',
       component: SessionsMain,
