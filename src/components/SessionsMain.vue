@@ -1,13 +1,13 @@
 <template>
     <div class="sessions-main">
-        <SessionsTable />
+        <SessionsView />
         <!-- Add your session-related content here -->
     </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import SessionsTable from './SessionsTable.vue'
+import SessionsView from './SessionsView.vue'
 
 const sessions = ref([])
 </script>

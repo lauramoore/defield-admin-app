@@ -1,79 +1,84 @@
 <template>
     <div>
+        <div class="table-header">
+            <h3>Session Calendar</h3>
+            <button @click="openAddModal" class="btn-primary">Add Session</button>
+        </div>
         <div v-if="loading">Loading...</div>
         <div v-else-if="error">{{ error }}</div>
-        <table v-else class="styled-table">
-            <thead>
-            <tr>
-                <th>Day</th>
-                <th>Time</th>
-                <th>Teams</th>
-                <th>Parent</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="session in sessions" :key="session.id">
-                <td>{{ session.day }}</td>
-                <td>{{ formatTime(session) }}</td>
-                <td>{{ formatTeams(session.teams) }}</td>
-                <td>{{ session.parent }}</td>
-                <td>
-                <button @click="openEditModal(session)">Edit</button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <button @click="openAddModal">Add More</button>
+        <FullCalendar v-else :options="calendarOptions" />
         <AddSessionModal 
             v-if="showModal" 
             :session="sessionToEdit"
             @close="closeModal" 
             @session-saved="handleSessionSaved"
         />
-        </div>
-    </template>
+    </div>
+</template>
 
-    <style scoped>
-    .styled-table {
-        width: 100%;
-        border-collapse: collapse;
-        table-layout: fixed;
-    }
+<style>
+/* It's better to import calendar styles in main.js or a global css file */
+@import '@fullcalendar/core/main.css';
+@import '@fullcalendar/daygrid/main.css';
+@import '@fullcalendar/timegrid/main.css';
 
-    .styled-table th, .styled-table td {
-        padding: 12px 8px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-        width: 20%;
-    }
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
 
-    .styled-table th {
-        background-color: #222;
-        color: #fff;
-    }
+.table-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+}
 
-    .styled-table tbody tr:nth-child(even) {
-        background-color: #f9f9f9;
-    }
-
-    .styled-table tbody tr:nth-child(even) td {
-        color: #222;
-    }
-
-    .styled-table tbody tr:nth-child(odd) {
-        background-color: #444;
-    }
-
-    .styled-table tbody tr:nth-child(odd) td {
-        color: #fff;
-    }
-    </style>
+/* Style overrides for FullCalendar to match the dark theme */
+:root {
+  --fc-bg-color: #23243a;
+  --fc-border-color: #444;
+  --fc-text-color: #e3e6ee;
+  --fc-button-bg-color: #e53935;
+  --fc-button-active-bg-color: #1976d2;
+  --fc-today-bg-color: rgba(229, 57, 53, 0.2);
+}
+.fc {
+    color: var(--fc-text-color);
+}
+.fc .fc-toolbar-title {
+    color: #e3e6ee;
+}
+.fc .fc-button {
+    background: var(--fc-button-bg-color);
+    border: none;
+}
+.fc .fc-button-primary:not(:disabled).fc-button-active, .fc .fc-button-primary:not(:disabled):active {
+    background-color: var(--fc-button-active-bg-color);
+}
+.fc-daygrid-day.fc-day-today {
+    background-color: var(--fc-today-bg-color);
+}
+.fc-daygrid-day-number {
+    color: #b0b3c6;
+}
+.fc-col-header-cell-cushion {
+    color: #e3e6ee;
+}
+.fc-event {
+    background-color: #1976d2;
+    border-color: #1976d2;
+}
+</style>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { getFirestore, collection, getDocs } from 'firebase/firestore'
 import AddSessionModal from './AddSessionModal.vue'
+import FullCalendar from '@fullcalendar/vue3'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'
+import interactionPlugin from '@fullcalendar/interaction'
 
 // Hardcoded sample data
 const sampleSessions = [
@@ -88,6 +93,35 @@ const error = ref(null)
 
 const showModal = ref(false)
 const sessionToEdit = ref(null)
+
+const calendarOptions = computed(() => ({
+    plugins: [ dayGridPlugin, timeGridPlugin, interactionPlugin ],
+    initialView: 'timeGridWeek',
+    headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+    },
+    events: sessions.value.map(session => ({
+        id: session.id,
+        title: `Teams: ${formatTeams(session.teams)}`,
+        start: `${session.date}T${session.start}`,
+        end: `${session.date}T${session.end}`,
+        extendedProps: {
+            ...session
+        }
+    })),
+    eventClick: handleEventClick,
+    editable: true,
+    droppable: true
+}));
+
+function handleEventClick(clickInfo) {
+    const session = sessions.value.find(s => s.id === clickInfo.event.id);
+    if (session) {
+        openEditModal(session);
+    }
+}
 
 async function fetchSessions() {
     loading.value = true
@@ -137,15 +171,5 @@ function closeModal() {
 async function handleSessionSaved() {
     closeModal()
     await fetchSessions() // Re-fetch data to show changes
-}
-
-function formatTime(session) {
-    // The modal uses duration, but the table shows start/end.
-    // This is inconsistent in the original code. I'll stick to start/end for display.
-    return `${session.start} - ${session.end || 'N/A'}`
-}
-function formatTeams(teams) {
-    if (!teams || !Array.isArray(teams)) return ''
-    return teams.join(', ')
 }
 </script>
