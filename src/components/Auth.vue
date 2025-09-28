@@ -7,12 +7,11 @@ import { onMounted, defineComponent, getCurrentInstance } from 'vue';
 import * as firebaseui from 'firebaseui';
 import {GoogleAuthProvider} from 'firebase/auth';
 import 'firebaseui/dist/firebaseui.css';
+import { inject } from 'vue';
 
-onMounted(() => {
-  const instance = getCurrentInstance();
-  const firebaseAuth = instance?.appContext.config.globalProperties.$firebaseAuth;
-  const ui = new firebaseui.auth.AuthUI(firebaseAuth);
-  const uiConfig = {
+const firebaseAuth = inject('auth');
+const ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(firebaseAuth);
+const uiConfig = {
     signInSuccessUrl: '/', // URL to redirect to after a successful sign-in
     signInOptions: [
       {
@@ -27,13 +26,8 @@ onMounted(() => {
     credentialHelper: firebaseui.auth.CredentialHelper.NONE, // Avoids popup issues with emulators
     // Optionally, you can set tosUrl and privacyPolicyUrl to localhost/test URLs for emulator
   };
+onMounted(() => {
   // The start method will wait for the DOM to be loaded
   ui.start('#firebaseui-auth-container', uiConfig);
-});
-</script>
-
-<script>
-export default defineComponent({
-  name: 'AuthWidget'
 });
 </script>

@@ -6,7 +6,7 @@ const router = createRouter({
   routes: [
     {
       path: '/sessions',
-      name: 'home',
+      name: 'sessions',
       component: SessionsMain,
     },
     {
@@ -17,6 +17,11 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../components/FeedbackMain.vue'),
     },
+    {
+      path: '/communications',
+      name: 'communications',
+      component: () => import('../components/CommunicationsMain.vue'),
+    }
   ],
 })
 

@@ -31,12 +31,9 @@ if (window.location.hostname === "localhost") {
 }
 const vueApp = createApp(App)
 vueApp.use(router);
+vueApp.provide('auth', auth);
+vueApp.provide('db', firestore);
+vueApp.provide('functions', functions);
 // Make Firebase services available globally to all components.
 // This is a convenient way to access `auth` and `db` without prop drilling.
-vueApp.config.globalProperties.$firebaseAuth = auth;
-vueApp.config.globalProperties.$fireStore = firestore;
-vueApp.config.globalProperties.$functions = functions;
-const appId = firebaseConfig.appId;
-vueApp.config.globalProperties.$appId = appId;
-
 vueApp.mount('#app')

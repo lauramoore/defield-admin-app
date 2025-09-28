@@ -1,38 +1,23 @@
 <template>
-    <AuthWidget v-if="!isAuthenticated" />
-    <HelloWorld v-else />
+  <AuthWidget v-if="!isAuthenticated" />
+  <Dashboard v-else />
 </template>
 
-<script>
-import HelloWorld from './components/Dashboard.vue'
-import AuthWidget from './components/Auth.vue';
+<script setup>
 import { ref, onMounted } from 'vue';
+import AuthWidget from './components/Auth.vue';
+import Dashboard from './components/Dashboard.vue';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
+const isAuthenticated = ref(false);
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld,
-    AuthWidget
-  },
-  setup() {
-  const isAuthenticated = ref(false);
-
-    onMounted(() => {
-      const auth = getAuth();
-      onAuthStateChanged(auth, (user) => {
-        // Update the value based on the user's login status
-        isAuthenticated.value = !!user;
-        console.log('Auth state changed. User is authenticated:', isAuthenticated.value);
-      });
-    });
-
-    return {
-      isAuthenticated
-    };
-  }  
-}
+onMounted(() => {
+  const auth = getAuth();
+  onAuthStateChanged(auth, (user) => {
+    isAuthenticated.value = !!user;
+    console.log('Auth state changed. User is authenticated:', isAuthenticated.value);
+  });
+});
 </script>
 
 <style>
